@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres
+spec:
+  selector:
+    matchLabels:
+      app: postgres
+  template:
+    metadata:
+      labels:
+        app: postgres
+    spec:
+      containers:
+        - name: postgres
+          image: postgres:13.16
+          ports:
+            - containerPort: 5432
+          env:
+            - name: POSTGRES_USER
+              value: admin
+            - name: POSTGRES_PASSWORD
+              value: fake-shop-password
+            - name: POSTGRES_DB
+              value: fake_shop_db
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fakeshop
+spec:
+  selector:
+    matchLabels:
+      app: fakeshop
+  template:
+    metadata:
+      labels:
+        app: fakeshop
+    spec:
+      containers:
+        - name: fakeshop
+          image: davidalmd/fake-shop:v2
+          ports:
+            - containerPort: 5000
+          env:
+            - name: DB_HOST
+              value: postgres
+            - name: DB_USER
+              value: admin
+            - name: DB_PASSWORD
+              value: fake-shop-password
+            - name: DB_NAME
+              value: fake_shop_db
