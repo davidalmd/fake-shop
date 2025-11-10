@@ -23,8 +23,20 @@ spec:
               value: fake-shop-password
             - name: POSTGRES_DB
               value: fake_shop_db
----
 
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres
+spec:
+  type: ClusterIP
+  ports:
+    - port: 5432
+  selector:
+    app: postgres
+
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -52,3 +64,19 @@ spec:
               value: fake-shop-password
             - name: DB_NAME
               value: fake_shop_db
+            - name: FLASK_APP
+              value: index.py
+
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: fakeshop
+spec:
+  type: NodePort
+  ports:
+    - port: 5000
+      nodePort: 30000
+  selector:
+    app: fakeshop
