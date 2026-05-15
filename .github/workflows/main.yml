@@ -23,4 +23,12 @@ jobs:
           context: ./src
           push: true
           file: ./src/Dockerfile
-          tags: davidalmd/fake-shop:v3
+          tags: davidalmd/fake-shop:v${{ github.run_number }}
+
+  CD:
+    needs: CI
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Obter o código"
+      - run: echo "Configurar o kubeconfig"
+      - run: echo "Executar o apply do kubertnetes"
