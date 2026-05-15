@@ -8,14 +8,19 @@ jobs:
   CI:
     runs-on: ubuntu-latest
     steps:
-      - run: echo "Obter o código"
-      - run: echo "Executar o Docker Build"
-      - run: echo "Enviar a imagem Docker para o Docker Hub"
+      - name: Obtendo o código
+        uses: actions/checkout@v4.2.2
 
-  CD:
-    needs: CI
-    runs-on: ubuntu-latest
-    steps:
-      - run: echo "Obter o código"
-      - run: echo "Configurar o kubeconfig"
-      - run: echo "Executar o apply do kubertnetes"
+      - name: Login no DockerHub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER.TOKEN }}
+
+      - name: Construção e Envio de imagem docker
+        uses: docker/build-push-action@v4
+        with:
+          context: ./src
+          push: true
+          file: ./src/Dockerfile
+          tags: davidalmd/fake-shop:v3
